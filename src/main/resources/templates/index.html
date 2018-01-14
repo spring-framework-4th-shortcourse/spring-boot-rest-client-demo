@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1" />
+<title>Ajax Demo</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+	<div class="container-fluid">
+		<h1>Ajax Demo</h1><hr/>
+		<a class="btn btn-primary" href="/create">Create Message</a>
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>Id</th>
+					<th>Message</th>
+					<th>Action</th>
+				</tr>
+			</thead>
+			<tbody>
+			</tbody>	
+		</table>
+	</div>
+	
+	<script>
+		$(document).ready(function(){
+			console.log('Hello Ajax');
+			
+			$.get('http://localhost:8080/messages', 
+					function(response, status){
+				
+				var messages =  response.data;
+				console.log(messages);
+				var str = ``;
+				messages.forEach(function(m){
+					str += `<tr>
+								<td>${m.id}</td>
+								<td>${m.text}</td>
+								<td><button id="${m.id}" onclick="removeMessage(this);" class="btn btn-danger">Remove</button></td>
+								<td><button class="btn btn-warning">Edit</button></td>
+							</tr>`;
+				});
+				
+				$('tbody').html(str);
+			});
+		});
+		
+		function removeMessage(self){
+			console.log(self.id);
+			var id = self.id;
+			// GET, POST, PUT, PATCH, DELETE, ...
+			$.ajax({
+				url: 'http://localhost:8080/messages/' + id,
+				method: 'DELETE',
+				success: function(response, status, xhr){
+					console.log(xhr);
+					console.log(status);
+					//remove tr from table
+					$(self).parents('tr').remove();
+				},
+				error: function(error){
+					console.log('error', error);
+				}
+			});
+		};
+	</script>
+</body>
+</html>
