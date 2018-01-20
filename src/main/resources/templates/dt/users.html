@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="ISO-8859-1"/>
+	<title>Data Table Demo</title>
+	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" />
+	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+	<script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+</head>
+<body>
+	<table id="example" class="display" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Gender</th>
+                <th>Image</th>
+            </tr>
+        </thead>
+    </table>
+	<script>
+		$(document).ready(function() {
+			
+			//data pass to server
+			var filter = function dataFilter(){
+				var settings = $("#example").dataTable().fnSettings();
+				//TODO: prepare data for passing to server!
+	            var obj = {
+	                "draw" : settings.iDraw,
+	                "page" : (settings._iDisplayStart / settings._iDisplayLength) + 1,
+	                "limit": settings._iDisplayLength,
+	            };
+	            console.log('filter', obj);
+	            return obj;
+			};
+
+		    $('#example').DataTable({
+		    	"processing": true,
+		        "serverSide": true,
+		    	"ajax": {
+	            	"url" : "http://localhost:8282/api/users",
+	            	"data": filter,
+	            	"dataFilter": function(response){
+	            		response = jQuery.parseJSON(response);
+	            		console.log('response', response);
+	     	            //TODO: response pattern for DATATABLE
+	     	            var jsonDatatable = {
+	     	            	"draw" : response.paging.draw,
+	     	            	"recordsTotal": response.paging.totalCount,
+	     	            	"recordsFiltered": response.paging.totalCount,
+	     	            	"data": response.data
+	     	            };
+	     	            return JSON.stringify(jsonDatatable); // return JSON string
+	     	        },
+	            },
+	            "columns": [
+        		    { "data": "id" },
+        		    { "data": "name" },
+        		    { "data": "gender" },
+        		    { "data": "image" }
+        		]
+		    });
+		} );
+	</script>
+</body>
+</html>

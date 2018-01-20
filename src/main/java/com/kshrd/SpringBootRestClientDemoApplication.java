@@ -13,6 +13,11 @@ public class SpringBootRestClientDemoApplication {
 		SpringApplication.run(SpringBootRestClientDemoApplication.class, args);
 	}
 	
+	@RequestMapping("/users")
+	public String user(){
+		return "dt/users";
+	}
+	
 	@RequestMapping("/")
 	public String home(){
 		return "index";
@@ -20,6 +25,16 @@ public class SpringBootRestClientDemoApplication {
 	@RequestMapping("/create")
 	public String create(){
 		return "create";
+	}
+	
+	@RequestMapping("/datatable")
+	public String dataTable(){
+		return "dt/datatable";
+	}
+	
+	@RequestMapping("/datatable-objects")
+	public String dataTableObject(){
+		return "dt/datatable-objects";
 	}
 	
 }
